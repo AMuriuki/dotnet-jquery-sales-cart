@@ -1,0 +1,23 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user*
+
+# Configuration files
+appsettings.Development.json
+appsettings.Production.json
+
+# Log files
+*.log
+
+# Node.js modules
+node_modules/
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
