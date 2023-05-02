@@ -21,3 +21,6 @@ node_modules/
 
 # Windows files
 Thumbs.db
+
+sales.db-shm
+sales.db-wal
