@@ -1,0 +1,32 @@
+.quantity {
+    display: flex;
+}
+
+.quantity button {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.quantity button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.quantity button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.quantity input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 16px;
+    font-weight: bold;
+}

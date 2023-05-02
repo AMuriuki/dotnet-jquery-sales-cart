@@ -31,6 +31,8 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
         return product.sku === selectedSku;
     });
 
+    var quantityInput = $("<input>").attr("type", "text").attr("class", "quantity-input").val("1");
+
     // create a new row for selected product
     var newRow = $("<tr>");
 
@@ -42,6 +44,16 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
                 $("<a>").addClass("product-img").
                     append($("<img>").attr("src", selectedProduct.imageUrl).attr("alt", selectedProduct.name)),
                 $("<a>").attr("href", "javascript:void(0);").text(selectedProduct.name)));
+    newRow.append(
+        $("<td>").
+            append(
+                $("<div>").addClass("quantity").append(
+                    $("<button>").attr("type", "button").attr("class", "quantity-button").text("-").click(decreaseQuantity),
+                    quantityInput,
+                    $("<button>").attr("type", "button").attr("class", "quantity-button").text("+").click(increaseQuantity)
+                )
+            )
+    );
     newRow.append(
         $("<td>").text(selectedProduct.price.toFixed(2)));
     newRow.append(
@@ -76,3 +88,29 @@ $(document).on('click', '.delete-set', function () {
 function updateTotalPrice() {
     $(".total h5").text("Ksh." + totalPrice.toFixed(2));
 }
+
+function decreaseQuantity() {
+    var input = $(this).closest('.quantity').find('input');
+    var value = parseInt(input.value);
+    if (value > 1) {
+        input.value = value - 1;
+        updateSubtotal(input);
+    }
+}
+
+function increaseQuantity() {
+    var input = $(this).closest('.quantity').find('input');
+    var value = parseInt(input.value);
+    input.value = value + 1;
+    updateSubtotal(input);
+}
+
+function updateSubtotal(input) {
+    var quantity = parseInt(input.val());
+    var price = parseFloat(input.closest("tr").find("td:eq(2)").text());
+    var subtotal = quantity * price;
+    input.closest("tr").find("td:eq(3)").text(subtotal.toFixed(2));
+    updateTotalPrice();
+}
+
+
