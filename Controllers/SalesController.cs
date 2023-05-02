@@ -1,14 +1,38 @@
 using Microsoft.AspNetCore.Mvc;
+using sales_invoicing_dotnet.Data;
 
-public class SalesController : Controller
+namespace sales_invoicing_dotnet.Controllers
 {
-    public IActionResult Index()
+    public class SalesController : Controller
     {
-        return View();
-    }
+        private readonly SalesContext _context;
 
-    public IActionResult Create()
-    {
-        return View();
+        public SalesController(SalesContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult GetProducts()
+        {
+            if (_context.Products != null)
+            {
+                var productsList = _context.Products.ToList();
+                return Json(productsList);
+            }
+            else
+            {
+                return Json(new List<Product>());
+            }
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
