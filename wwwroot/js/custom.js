@@ -58,3 +58,7 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
 
     return false;
 });
+
+$(document).on('click', 'delete-set', function(){
+    $(this).closest('tr').remove();
+})
