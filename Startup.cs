@@ -40,7 +40,7 @@ namespace sales_invoicing_dotnet
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Sales/Error");
             }
 
             app.UseStaticFiles();
@@ -51,7 +51,7 @@ namespace sales_invoicing_dotnet
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Sales}/{action=Index}/{id?}");
             });
         }
     }
