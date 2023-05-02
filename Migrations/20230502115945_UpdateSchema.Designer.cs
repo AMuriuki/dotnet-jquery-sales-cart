@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sales_invoicing_dotnet.Data;
 
@@ -10,9 +11,11 @@ using sales_invoicing_dotnet.Data;
 namespace sales_invoicing_dotnet.Migrations
 {
     [DbContext(typeof(SalesContext))]
-    partial class SalesContextModelSnapshot : ModelSnapshot
+    [Migration("20230502115945_UpdateSchema")]
+    partial class UpdateSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -49,15 +52,15 @@ namespace sales_invoicing_dotnet.Migrations
                             Name = "Apple AirPods Pro",
                             Price = 8500.00m,
                             imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/31/2411421/1.jpg?5248",
-                            sku = "PROD-001"
+                            sku = "P1"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Xiaomi Redmi Buds",
+                            Name = "Xiamo Redmi Buds",
                             Price = 2700.00m,
                             imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/05/7399421/1.jpg?3641",
-                            sku = "PROD-002"
+                            sku = "P10"
                         },
                         new
                         {
@@ -65,7 +68,7 @@ namespace sales_invoicing_dotnet.Migrations
                             Name = "Oraimo Wireless Earphone",
                             Price = 3400.00m,
                             imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/94/1328411/1.jpg?9977",
-                            sku = "PROD-003"
+                            sku = "P100"
                         },
                         new
                         {
@@ -73,7 +76,7 @@ namespace sales_invoicing_dotnet.Migrations
                             Name = "Netac USB Type-C 128 GB",
                             Price = 1600.00m,
                             imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/71/283233/1.jpg?8328",
-                            sku = "PROD-004"
+                            sku = "P1000"
                         },
                         new
                         {
@@ -81,7 +84,7 @@ namespace sales_invoicing_dotnet.Migrations
                             Name = "Sandisk USB 32GB ",
                             Price = 8500.00m,
                             imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/01/191691/1.jpg?4986",
-                            sku = "PROD-005"
+                            sku = "P10000"
                         });
                 });
 

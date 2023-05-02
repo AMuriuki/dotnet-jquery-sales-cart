@@ -4,6 +4,7 @@ public class Product
     public string? Name { get; set; }
     public decimal Price { get; set; }
     public string? sku { get; set; }
+    public string? imageUrl { get; set; }
     public ICollection<SaleProduct>? SaleProducts { get; set; } = new List<SaleProduct>();
 }
 public class Sale
