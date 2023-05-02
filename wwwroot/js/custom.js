@@ -30,5 +30,31 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
         return product.sku === selectedSku;
     });
 
-    
+    // create a new row for selected product
+    var newRow = $("<tr>");
+
+    // add the product info to the new row
+    newRow.append($("<td>").text($("#cart-table-body tr").length + 1));
+    newRow.append(
+        $("<td>").addClass("productimgname").
+            append(
+                $("<a>").addClass("product-img").
+                    append($("<img>").attr("src", selectedProduct.imageUrl).attr("alt", selectedProduct.name)),
+                $("<a>").attr("href", "javascript:void(0);").text(selectedProduct.name)));
+    newRow.append(
+        $("<td>").text(selectedProduct.price.toFixed(2)));
+    newRow.append(
+        $("<td>").
+            append(
+                $("<a>").attr("href", "javascript:void(0);").addClass("delete-set").append(
+                    $("<img>").attr("src", "/images/delete.svg").attr("alt", "svg")
+                )
+            ));
+
+    // add the new row to the table
+    $("#cart-table-body").append(newRow);
+
+    $("#selectProduct").val('');
+
+    return false;
 });
