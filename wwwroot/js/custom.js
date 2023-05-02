@@ -1,4 +1,5 @@
 var products = []
+var totalPrice = 0.0;
 
 $(function () {
     $.ajax({
@@ -56,9 +57,22 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
 
     $("#selectProduct").val('');
 
+    // update the total price
+    totalPrice += selectedProduct.price
+    updateTotalPrice();
+
     return false;
 });
 
-$(document).on('click', 'delete-set', function(){
+$(document).on('click', '.delete-set', function () {
     $(this).closest('tr').remove();
+
+    // update total price
+    var deletedProductPrice = parseFloat($(this).closest("tr").find("td:eq(2)").text());
+    totalPrice -= deletedProductPrice;
+    updateTotalPrice();
 })
+
+function updateTotalPrice() {
+    $(".total h5").text("Ksh." + totalPrice.toFixed(2));
+}
