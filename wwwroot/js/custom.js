@@ -22,5 +22,7 @@ $(function () {
 })
 
 $("#selectProduct").on("autocompleteselect", function (event, ui) {
-    console.log(ui.item.value)
+    var selectedValue = ui.item.value;
+    var skuIndex = selectedValue.lastIndexOf(" - ") + 3;
+    var selectedSku = selectedValue.substring(skuIndex);
 });
