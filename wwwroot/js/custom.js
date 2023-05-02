@@ -1,6 +1,6 @@
-$(function () {
-    var products = []
+var products = []
 
+$(function () {
     $.ajax({
         url: '/Sales/GetProducts',
         method: 'GET',
@@ -25,4 +25,10 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
     var selectedValue = ui.item.value;
     var skuIndex = selectedValue.lastIndexOf(" - ") + 3;
     var selectedSku = selectedValue.substring(skuIndex);
+
+    var selectedProduct = products.find(function (product) {
+        return product.sku === selectedSku;
+    });
+
+    
 });
