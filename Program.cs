@@ -1,4 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using sales_invoicing_dotnet.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<SalesContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("SalesContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
