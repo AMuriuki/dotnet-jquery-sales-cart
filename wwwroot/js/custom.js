@@ -69,6 +69,7 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
     $("#cart-table-body").append(newRow);
 
     $("#selectProduct").val('');
+    $(".extras").removeClass("d-none");
 
     // update the total price
     totalPrice += selectedProduct.price
@@ -98,7 +99,7 @@ $(document).on('change', '.quantity input', function (event) {
 
 
 function updateTotalPrice() {
-    $(".total h5").text("Ksh. " + insertCommas(totalPrice.toFixed(2)));
+    $(".total").text(insertCommas(totalPrice.toFixed(2)));
 }
 
 function decreaseQuantity() {
@@ -150,12 +151,49 @@ function convertToNumber(a) {
     return parseFloat(number)
 }
 
-$('.tax-input').on('input', function () {
+function validateTaxInput() {
+
+}
+
+$('.tax-input, .discount-input').on('input keypress', function (event) {
     var value = $(this).val();
+
     if (value > 100) {
-        $(".tax-warning").removeClass("d-none");
+        // $(".tax-warning, .discount-warning").removeClass("d-none");
+        $(this).siblings('span').removeClass("d-none");
     }
     else {
-        $(".tax-warning").addClass("d-none");
+        // $(".tax-warning, .discount-warning").addClass("d-none");
+        $(this).siblings('span').addClass("d-none");
+    }
+
+    if (value.indexOf(".") !== -1 && value.split(".")[1].length === 2) {
+        event.preventDefault();
     }
 })
+
+
+$('.tax-input').on('input', function () {
+    var value = $(this).val();
+    var tax = totalPrice * (value / 100);
+    $(".tax-value").text(insertCommas(tax));
+    $(".tax-percentage").text(insertCommas(value));
+    var afterTax = totalPrice - tax;
+    // $(".total").text(insertCommas(afterTax.toFixed(2)));
+    calculateTotalPrice(subtotal, tax)
+})
+
+$('.discount-input').on('input', function () {
+    var value = $(this).val();
+    var discount = totalPrice * (value / 100);
+    $(".discount-value").text(insertCommas(discount));
+    $(".discount-percentage").text(insertCommas(value));
+    var afterDiscount = totalPrice - discount;
+    $(".total").text(insertCommas(afterDiscount.toFixed(2)));
+})
+
+
+function calculateTotalPrice(subtotal, tax, discount, shipping) {
+    totalPrice = subtotal + (-tax) + (-discount) + (-shipping);
+    updateTotalPrice
+}

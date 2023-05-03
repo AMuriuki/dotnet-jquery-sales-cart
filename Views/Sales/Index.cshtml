@@ -79,12 +79,13 @@
                                 </tr>
                             </thead>
                             <tbody id="cart-table-body">
-                                
+
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="row">
+
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Tax (%)</label>
@@ -94,8 +95,9 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Discount</label>
-                            <input type="text">
+                            <label>Discount (%)</label>
+                            <span class="d-none discount-warning" style="color:red">Discount % cannot be more than 100</span>
+                            <input class="discount-input" type="number">
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
@@ -114,42 +116,50 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6 ">
-                            <div class="total-order w-100 max-widthauto m-auto mb-4">
-                                <ul>
-                                    <li>
-                                        <h4>Order Tax</h4>
-                                        <h5>Ksh. 0.00 (0.00%)</h5>
-                                    </li>
-                                    <li>
-                                        <h4>Discount </h4>
-                                        <h5>Ksh. 0.00</h5>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 ">
-                            <div class="total-order w-100 max-widthauto m-auto mb-4">
-                                <ul>
-                                    <li>
-                                        <h4>Shipping</h4>
-                                        <h5>Ksh. 0.00</h5>
-                                    </li>
-                                    <li class="total">
-                                        <h4>Grand Total</h4>
-                                        <h5>Ksh. 0.00</h5>
-                                    </li>
-                                </ul>
-                            </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 ">
+                        <div class="total-order w-100 max-widthauto m-auto mb-4">
+                            <ul>
+                                <li>
+                                    <h4>Tax</h4>
+                                    <h5>
+                                        Ksh.&nbsp;<span class="tax-value">0.00</span>
+                                        (<span class="tax-percentage">0)</span>%)
+                                    </h5>
+                                </li>
+                                <li>
+                                    <h4>Discount</h4>
+                                    <h5>
+                                        Ksh.&nbsp;<span class="discount-value">0.00</span>
+                                        (<span class="discount-percentage">0)</span>%)
+                                    </h5>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="col-lg-12">
-                        <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                        <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
+                    <div class="col-lg-6 ">
+                        <div class="total-order w-100 max-widthauto m-auto mb-4">
+                            <ul>
+                                <li>
+                                    <h4>Shipping</h4>
+                                    <h5>Ksh. 0.00</h5>
+                                </li>
+                                <li>
+                                    <h4>Grand Total</h4>
+                                    <h5>Ksh. <span class="total">0.00</span></h5>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+                </div>
+                <div class="col-lg-12">
+                    <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
+                    <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
