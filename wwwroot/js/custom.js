@@ -1,6 +1,5 @@
 var products = []
-var totalPrice = 0.0;
-var subtotal = 0.0;
+var totalPrice = 0.00, subtotal = 0.00, tax = 0.00, discount = 0.00, shipping = 0.0;
 
 $(function () {
     $.ajax({
@@ -89,11 +88,11 @@ $(document).on('click', '.delete-set', function () {
 
 $(document).on('change', '.quantity input', function (event) {
     var price = convertToNumber($(event.currentTarget).closest("tr").find("td:eq(3)").text());
-    var prevSubTotal = convertToNumber($(event.currentTarget).closest("tr").find("td:eq(4)").text());
+    // var prevSubTotal = convertToNumber($(event.currentTarget).closest("tr").find("td:eq(4)").text());
     var quantity = parseInt($(this).val())
     subtotal = price * quantity;
-    totalPrice -= prevSubTotal;
-    totalPrice += subtotal
+    // totalPrice -= prevSubTotal;
+    // totalPrice += subtotal
     updateSubtotal($(event.currentTarget));
 })
 
@@ -112,7 +111,7 @@ function decreaseQuantity() {
         var price = convertToNumber(input.closest("tr").find("td:eq(3)").text());
 
         subtotal = price * quantity;
-        totalPrice -= price
+        // totalPrice -= price
 
         updateSubtotal(input);
     }
@@ -127,14 +126,27 @@ function increaseQuantity() {
     var price = convertToNumber(input.closest("tr").find("td:eq(3)").text());
 
     subtotal = price * quantity;
-    totalPrice += price
+    // totalPrice += price
 
     updateSubtotal(input);
 }
 
 function updateSubtotal(input) {
     input.closest("tr").find("td:eq(4)").text(insertCommas(subtotal.toFixed(2)));
-    updateTotalPrice();
+
+    var value = 0.00
+
+    $("#cart-table-body tr").each(function () {
+        value += convertToNumber($(this).find("td:eq(4)").text());
+    })
+
+    calculateTotalPrice({
+        subtotal: value,
+        tax: tax,
+        discount: discount,
+        shipping: shipping,
+    })
+    // updateTotalPrice();
 }
 
 
@@ -193,7 +205,7 @@ $('.discount-input').on('input', function () {
 })
 
 
-function calculateTotalPrice(subtotal, tax, discount, shipping) {
-    totalPrice = subtotal + (-tax) + (-discount) + (-shipping);
-    updateTotalPrice
+function calculateTotalPrice(options) {
+    totalPrice = options.subtotal + (-options.tax) + (-options.discount) + (-options.shipping);
+    updateTotalPrice()
 }
