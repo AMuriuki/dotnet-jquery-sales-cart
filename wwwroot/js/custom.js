@@ -149,3 +149,13 @@ function convertToNumber(a) {
     number = a.replace(/\,/g, '');
     return parseFloat(number)
 }
+
+$('.tax-input').on('input', function () {
+    var value = $(this).val();
+    if (value > 100) {
+        $(".tax-warning").removeClass("d-none");
+    }
+    else {
+        $(".tax-warning").addClass("d-none");
+    }
+})
