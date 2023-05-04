@@ -12,25 +12,16 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Customer</label>
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10">
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Customer Name</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                    <div class="add-icon">
-                                        <span><img src="~/images/plus1.svg" alt="img"></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <select class="js-example-basic-single">
+                                <option>Choose</option>
+                                <option>Customer Name</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Customer</label>
                             <div class="input-groupicon">
@@ -39,15 +30,6 @@
                                     <img src="/images/calendars.svg" alt="img">
                                 </a>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Supplier</label>
-                            <select class="select">
-                                <option>Choose</option>
-                                <option>Supplier Name</option>
-                            </select>
                         </div>
                     </div>
                     <div class="col-lg-12 col-sm-6 col-12">
@@ -86,34 +68,25 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Tax (%)</label>
                             <span class="d-none tax-warning" style="color:red">Tax % cannot be more than 100</span>
                             <input class="tax-input" type="number">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Discount (%)</label>
-                            <span class="d-none discount-warning" style="color:red">Discount % cannot be more than 100</span>
+                            <span class="d-none discount-warning" style="color:red">Discount % cannot be more than
+                                100</span>
                             <input class="discount-input" type="number">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Shipping</label>
-                            <input type="text">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select class="select">
-                                <option>Choose Status</option>
-                                <option>Completed</option>
-                                <option>Inprogress</option>
-                            </select>
+                            <input class="shipping-input" type="number">
                         </div>
                     </div>
                 </div>
@@ -144,7 +117,9 @@
                             <ul>
                                 <li>
                                     <h4>Shipping</h4>
-                                    <h5>Ksh. 0.00</h5>
+                                    <h5>
+                                        Ksh.&nbsp;<span class="shipping-value">0.00</span>
+                                    </h5>
                                 </li>
                                 <li>
                                     <h4>Grand Total</h4>

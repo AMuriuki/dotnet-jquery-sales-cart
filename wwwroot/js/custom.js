@@ -1,5 +1,9 @@
 var products = []
-var totalPrice = 0.00, subtotal = 0.00, tax = 0.00, discount = 0.00, shipping = 0.0;
+var totalPrice = 0.00, subtotal = 0.00, tax = 0.00, tax_percentage = 0.00, discount = 0.00, discount_percentage = 0.00, shipping = 0.0;
+
+$(document).ready(function () {
+    $('.js-example-basic-single').select2();
+});
 
 $(function () {
     $.ajax({
@@ -72,27 +76,41 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
 
     // update the total price
     totalPrice += selectedProduct.price
+    subtotal = selectedProduct.price
+    updateSubtotal(quantityInput);
     updateTotalPrice();
 
     return false;
 });
 
 $(document).on('click', '.delete-set', function () {
+    var value = 0.00;
+
+    $("#cart-table-body tr").each(function () {
+        value += convertToNumber($(this).find("td:eq(4)").text());
+    })
+
     $(this).closest('tr').remove();
 
     // update total price
     var deletedProductPrice = convertToNumber($(this).closest("tr").find("td:eq(4)").text());
-    totalPrice -= deletedProductPrice;
-    updateTotalPrice();
+
+    console.log(value, deletedProductPrice)
+
+    value -= deletedProductPrice;
+
+    calculateTotalPrice({
+        subtotal: value,
+        tax: value * (tax_percentage / 100),
+        discount: value * (discount_percentage / 100),
+        shipping: shipping,
+    })
 })
 
 $(document).on('change', '.quantity input', function (event) {
     var price = convertToNumber($(event.currentTarget).closest("tr").find("td:eq(3)").text());
-    // var prevSubTotal = convertToNumber($(event.currentTarget).closest("tr").find("td:eq(4)").text());
     var quantity = parseInt($(this).val())
     subtotal = price * quantity;
-    // totalPrice -= prevSubTotal;
-    // totalPrice += subtotal
     updateSubtotal($(event.currentTarget));
 })
 
@@ -111,8 +129,6 @@ function decreaseQuantity() {
         var price = convertToNumber(input.closest("tr").find("td:eq(3)").text());
 
         subtotal = price * quantity;
-        // totalPrice -= price
-
         updateSubtotal(input);
     }
 }
@@ -126,9 +142,8 @@ function increaseQuantity() {
     var price = convertToNumber(input.closest("tr").find("td:eq(3)").text());
 
     subtotal = price * quantity;
-    // totalPrice += price
-
     updateSubtotal(input);
+
 }
 
 function updateSubtotal(input) {
@@ -140,13 +155,17 @@ function updateSubtotal(input) {
         value += convertToNumber($(this).find("td:eq(4)").text());
     })
 
+    console.log(value)
+
     calculateTotalPrice({
         subtotal: value,
-        tax: tax,
-        discount: discount,
+        tax: value * (tax_percentage / 100),
+        discount: value * (discount_percentage / 100),
         shipping: shipping,
     })
-    // updateTotalPrice();
+
+    $(".tax-value").text(insertCommas(value * (tax_percentage / 100)))
+    $(".discount-value").text(insertCommas(value * (discount_percentage / 100)));
 }
 
 
@@ -163,19 +182,15 @@ function convertToNumber(a) {
     return parseFloat(number)
 }
 
-function validateTaxInput() {
 
-}
 
-$('.tax-input, .discount-input').on('input keypress', function (event) {
+$('.tax-input, .discount-input, .shipping-input').on('input keypress', function (event) {
     var value = $(this).val();
 
     if (value > 100) {
-        // $(".tax-warning, .discount-warning").removeClass("d-none");
         $(this).siblings('span').removeClass("d-none");
     }
     else {
-        // $(".tax-warning, .discount-warning").addClass("d-none");
         $(this).siblings('span').addClass("d-none");
     }
 
@@ -186,26 +201,68 @@ $('.tax-input, .discount-input').on('input keypress', function (event) {
 
 
 $('.tax-input').on('input', function () {
-    var value = $(this).val();
-    var tax = totalPrice * (value / 100);
-    $(".tax-value").text(insertCommas(tax));
-    $(".tax-percentage").text(insertCommas(value));
-    var afterTax = totalPrice - tax;
-    // $(".total").text(insertCommas(afterTax.toFixed(2)));
-    calculateTotalPrice(subtotal, tax)
+    var value = 0.00;
+
+    $("#cart-table-body tr").each(function () {
+        value += convertToNumber($(this).find("td:eq(4)").text());
+    })
+
+    tax_percentage = $(this).val();
+    tax = value * (tax_percentage / 100);
+
+    $(".tax-value").text(insertCommas(tax.toFixed(2)));
+    $(".tax-percentage").text(insertCommas(tax_percentage));
+
+    calculateTotalPrice({
+        subtotal: value,
+        tax: tax,
+        discount: discount,
+        shipping: shipping,
+    })
 })
 
 $('.discount-input').on('input', function () {
-    var value = $(this).val();
-    var discount = totalPrice * (value / 100);
-    $(".discount-value").text(insertCommas(discount));
-    $(".discount-percentage").text(insertCommas(value));
-    var afterDiscount = totalPrice - discount;
-    $(".total").text(insertCommas(afterDiscount.toFixed(2)));
+    var value = 0.00;
+
+    $("#cart-table-body tr").each(function () {
+        value += convertToNumber($(this).find("td:eq(4)").text());
+    })
+
+    discount_percentage = $(this).val();
+    discount = value * (discount_percentage / 100);
+
+    $(".discount-value").text(insertCommas(discount.toFixed(2)));
+    $(".discount-percentage").text(insertCommas(discount_percentage));
+
+    calculateTotalPrice({
+        subtotal: value,
+        tax: tax,
+        discount: discount,
+        shipping: shipping,
+    })
+})
+
+$(".shipping-input").on('input', function () {
+    var value = 0.00;
+
+    $("#cart-table-body tr").each(function () {
+        value += convertToNumber($(this).find("td:eq(4)").text());
+    })
+
+    shipping = parseFloat($(this).val());
+
+    $(".shipping-value").text(insertCommas(shipping));
+
+    calculateTotalPrice({
+        subtotal: value,
+        tax: tax,
+        discount: discount,
+        shipping: shipping,
+    })
 })
 
 
 function calculateTotalPrice(options) {
-    totalPrice = options.subtotal + (-options.tax) + (-options.discount) + (-options.shipping);
+    totalPrice = (options.subtotal - options.discount) + (options.tax + options.shipping);
     updateTotalPrice()
 }
