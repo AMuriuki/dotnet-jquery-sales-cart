@@ -303,19 +303,18 @@ function calculateTotalPrice(options) {
 // post sales order
 $("#submitBtn").click(function () {
     var customerId = $("#selectCustomer").val();
+    var date = $(".date").val();
     var products = [];
 
     $("#cart-table-body tr").each(function () {
         var productId = $(this).find(".product").attr("id");
         var productName = $(this).find(".product").text()
 
-        console.log($(this).find(".product").text());
-
         var productQuantity = $(this).find("input[type='text']").val();
         products.push({
-            id: productId,
-            name: productName,
-            quantity: productQuantity
+            ProductId: parseInt(productId),
+            ProductName: productName,
+            Quantity: parseInt(productQuantity)
         });
     })
 
@@ -328,6 +327,7 @@ $("#submitBtn").click(function () {
 
     var data = {
         "customerId": customerId,
+        "date": date,
         "products": products,
         "taxValue": taxValue,
         "taxPercentage": taxPercentage,
@@ -337,19 +337,19 @@ $("#submitBtn").click(function () {
         "grandTotal": grandTotal
     }
 
-    console.log(products)
-    
+    console.log(data);
+
     $.ajax({
         type: "POST",
         url: "/Sales/Create",
         data: JSON.stringify(data),
         contentType: "application/json; charset=UTF-8",
-        dataType: "json",
+        dataType: "text",
         success: function (response) {
             alert("Order posted successfully")
         },
-        error: function (xhr, status, error) {
-            console.log(error);
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Error: " + jqXHR.responseText);
         }
     })
 });

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sales_invoicing_dotnet.Data;
 
@@ -10,9 +11,11 @@ using sales_invoicing_dotnet.Data;
 namespace sales_invoicing_dotnet.Migrations
 {
     [DbContext(typeof(SalesContext))]
-    partial class SalesContextModelSnapshot : ModelSnapshot
+    [Migration("20230504142539_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -31,7 +34,7 @@ namespace sales_invoicing_dotnet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customer");
 
                     b.HasData(
                         new
@@ -72,33 +75,10 @@ namespace sales_invoicing_dotnet.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("DiscountPercent")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("GrandTotal")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Shipping")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TaxPercent")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("TaxValue")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.ToTable("Invoices");
                 });
@@ -168,25 +148,11 @@ namespace sales_invoicing_dotnet.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("InvoiceId", "ProductId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("SoldProducts");
-                });
-
-            modelBuilder.Entity("Invoice", b =>
-                {
-                    b.HasOne("Customer", "Customer")
-                        .WithMany("Invoices")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("SoldProduct", b =>
@@ -206,11 +172,6 @@ namespace sales_invoicing_dotnet.Migrations
                     b.Navigation("Invoice");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Customer", b =>
-                {
-                    b.Navigation("Invoices");
                 });
 
             modelBuilder.Entity("Invoice", b =>

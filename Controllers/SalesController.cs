@@ -1,10 +1,10 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using sales_invoicing_dotnet.Data;
 
 namespace sales_invoicing_dotnet.Controllers
 {
-    [Produces("application/json")]
     public class SalesController : Controller
     {
         private readonly SalesContext _context;
@@ -34,9 +34,9 @@ namespace sales_invoicing_dotnet.Controllers
 
         public IActionResult GetCustomers()
         {
-            if (_context.Customer != null)
+            if (_context.Customers != null)
             {
-                var customersList = _context.Customer.ToList();
+                var customersList = _context.Customers.ToList();
                 return Json(customersList);
             }
             else
@@ -45,23 +45,98 @@ namespace sales_invoicing_dotnet.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Create()
-        {
-            using (var bodyReader = new StreamReader(HttpContext.Request.Body))
-            {
-                var requestBody = bodyReader.ReadToEnd();
-                var jsonDocument = JsonDocument.Parse(requestBody);
-                var productsElement = jsonDocument.RootElement.GetProperty("products");
-                var products = JsonSerializer.Deserialize<List<Product>>(productsElement.GetRawText());
-                foreach (var product in products)
-                {
-                    Console.WriteLine($"Product ID: {product.Id}, Name: {product.Name}, Quantity: {product.Quantity}");
-               }
 
+        [HttpPost]
+        public async Task<IActionResult> Create()
+        {
+            try
+            {
+                using (var bodyReader = new StreamReader(HttpContext.Request.Body))
+                {
+                    var requestBody = await bodyReader.ReadToEndAsync();
+                    var jsonDocument = JsonDocument.Parse(requestBody);
+
+                    var customerIdStr = jsonDocument.RootElement.GetProperty("customerId").GetString();
+                    int.TryParse(customerIdStr, out int customerId);
+
+                    var dateStr = jsonDocument.RootElement.GetProperty("date").GetString();
+                    DateTime.TryParse(dateStr, out DateTime date);
+
+                    var productsElement = jsonDocument.RootElement.GetProperty("products");
+                    var soldProducts = JsonSerializer.Deserialize<List<SoldProduct>>(productsElement.GetRawText());
+
+                    if (soldProducts == null || soldProducts.Count == 0)
+                    {
+                        return BadRequest("First add products to this sales order");
+                    }
+
+                    var taxValueStr = jsonDocument.RootElement.GetProperty("taxValue").GetString();
+                    decimal.TryParse(taxValueStr, out decimal taxValue);
+
+                    var taxPercentageStr = jsonDocument.RootElement.GetProperty("taxPercentage").GetString();
+                    int.TryParse(taxPercentageStr, out int taxPercentage);
+
+                    var discountValueStr = jsonDocument.RootElement.GetProperty("discountValue").GetString();
+                    decimal.TryParse(discountValueStr, out decimal discountValue);
+
+                    var discountPercentageStr = jsonDocument.RootElement.GetProperty("discountPercentage").GetString();
+                    int.TryParse(discountPercentageStr, out int discountPercentage);
+
+                    var shippingStr = jsonDocument.RootElement.GetProperty("shipping").GetString();
+                    decimal.TryParse(shippingStr, out decimal shipping);
+
+                    var grandTotalStr = jsonDocument.RootElement.GetProperty("grandTotal").GetString();
+                    decimal.TryParse(grandTotalStr, out decimal grandTotal);
+
+                    // Get the customer from the database
+                    var customer = await _context.Customers.FindAsync(customerId);
+
+                    if (customer == null)
+                    {
+                        return BadRequest("Customer not found");
+                    }
+
+                    // Create a new invoice and assign the customer to it
+                    var invoice = new Invoice
+                    {
+                        Date = date,
+                        Customer = customer,
+                        TaxPercent = taxPercentage,
+                        TaxValue = taxValue,
+                        DiscountPercent = discountPercentage,
+                        DiscountValue = discountValue,
+                        Shipping = shipping,
+                        GrandTotal = grandTotal,
+                        SoldProducts = new List<SoldProduct>()
+                    };
+
+                    // Add sold products to the invoice
+                    foreach (var soldProduct in soldProducts)
+                    {
+                        // Get product from DB
+                        var product = await _context.Products.FindAsync(soldProduct.ProductId);
+
+                        // Add sold product to invoice
+                        invoice.SoldProducts.Add(new SoldProduct
+                        {
+                            Product = product,
+                            Quantity = soldProduct.Quantity
+                        });
+                    }
+
+                    // save the invoice
+                    _context.Invoices.Add(invoice);
+                    await _context.SaveChangesAsync();
+
+                }
+                return Ok();
             }
-            Console.WriteLine(Request.Form["customerId"]);
-            return Ok();
+            catch (Exception ex)
+            {
+                string errorMessage = $"An error occurred: {ex.Message}\nStack trace: {ex.StackTrace}\nLine number: {ex.LineNumber()}";
+                return BadRequest(errorMessage);
+            }
         }
+
     }
 }

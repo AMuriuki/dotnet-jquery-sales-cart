@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sales_invoicing_dotnet.Data;
 
@@ -10,9 +11,11 @@ using sales_invoicing_dotnet.Data;
 namespace sales_invoicing_dotnet.Migrations
 {
     [DbContext(typeof(SalesContext))]
-    partial class SalesContextModelSnapshot : ModelSnapshot
+    [Migration("20230504194208_UpdateInvoiceModel")]
+    partial class UpdateInvoiceModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -81,20 +84,20 @@ namespace sales_invoicing_dotnet.Migrations
                     b.Property<int>("DiscountPercent")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DiscountValue")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("GrandTotal")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GrandTotal")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Shipping")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Shipping")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TaxPercent")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("TaxValue")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TaxValue")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
