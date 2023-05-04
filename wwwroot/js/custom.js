@@ -8,6 +8,8 @@ $(document).ready(function () {
     $('.js-example-basic-single').select2();
 });
 
+
+
 $(function () {
     $.ajax({
         url: '/Sales/GetProducts',
@@ -69,7 +71,7 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
             append(
                 $("<a>").addClass("product-img").
                     append($("<img>").attr("src", selectedProduct.imageUrl).attr("alt", selectedProduct.name)),
-                $("<a>").attr("href", "javascript:void(0);").text(selectedProduct.name)));
+                $("<a>").addClass("product").attr("href", "javascript:void(0);").attr("id", selectedProduct.id).text(selectedProduct.name)));
     newRow.append(
         $("<td>").
             append(
@@ -297,3 +299,57 @@ function calculateTotalPrice(options) {
     }
     updateTotalPrice()
 }
+
+// post sales order
+$("#submitBtn").click(function () {
+    var customerId = $("#selectCustomer").val();
+    var products = [];
+
+    $("#cart-table-body tr").each(function () {
+        var productId = $(this).find(".product").attr("id");
+        var productName = $(this).find(".product").text()
+
+        console.log($(this).find(".product").text());
+
+        var productQuantity = $(this).find("input[type='text']").val();
+        products.push({
+            id: productId,
+            name: productName,
+            quantity: productQuantity
+        });
+    })
+
+    var taxValue = $(".tax-value").text();
+    var taxPercentage = $(".tax-percentage").text();
+    var discountValue = $(".discount-value").text();
+    var discountPercentage = $(".discount-percentage").text();
+    var shipping = $(".shipping-value").text();
+    var grandTotal = $(".total").text();
+
+    var data = {
+        "customerId": customerId,
+        "products": products,
+        "taxValue": taxValue,
+        "taxPercentage": taxPercentage,
+        "discountValue": discountValue,
+        "discountPercentage": discountPercentage,
+        "shipping": shipping,
+        "grandTotal": grandTotal
+    }
+
+    console.log(products)
+    
+    $.ajax({
+        type: "POST",
+        url: "/Sales/Create",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=UTF-8",
+        dataType: "json",
+        success: function (response) {
+            alert("Order posted successfully")
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    })
+});

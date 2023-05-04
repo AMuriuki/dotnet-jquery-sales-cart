@@ -1,8 +1,10 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using sales_invoicing_dotnet.Data;
 
 namespace sales_invoicing_dotnet.Controllers
 {
+    [Produces("application/json")]
     public class SalesController : Controller
     {
         private readonly SalesContext _context;
@@ -43,9 +45,23 @@ namespace sales_invoicing_dotnet.Controllers
             }
         }
 
+        [HttpPost]
         public IActionResult Create()
         {
-            return View();
+            using (var bodyReader = new StreamReader(HttpContext.Request.Body))
+            {
+                var requestBody = bodyReader.ReadToEnd();
+                var jsonDocument = JsonDocument.Parse(requestBody);
+                var productsElement = jsonDocument.RootElement.GetProperty("products");
+                var products = JsonSerializer.Deserialize<List<Product>>(productsElement.GetRawText());
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"Product ID: {product.Id}, Name: {product.Name}, Quantity: {product.Quantity}");
+               }
+
+            }
+            Console.WriteLine(Request.Form["customerId"]);
+            return Ok();
         }
     }
 }
