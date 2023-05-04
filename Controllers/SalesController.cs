@@ -30,6 +30,19 @@ namespace sales_invoicing_dotnet.Controllers
             }
         }
 
+        public IActionResult GetCustomers()
+        {
+            if (_context.Customer != null)
+            {
+                var customersList = _context.Customer.ToList();
+                return Json(customersList);
+            }
+            else
+            {
+                return Json(new List<Customer>());
+            }
+        }
+
         public IActionResult Create()
         {
             return View();

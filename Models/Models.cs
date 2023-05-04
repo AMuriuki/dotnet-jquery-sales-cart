@@ -21,3 +21,10 @@ public class SaleProduct
     public int ProductId { get; set; }
     public Product? Product { get; set; }
 }
+
+public class Customer
+{
+    public int Id { get; set; }
+    public string? fname { get; set; }
+    public string? lname { get; set; }
+}

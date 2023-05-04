@@ -1,5 +1,8 @@
-var products = []
+var products = [], customers = [];
+
 var totalPrice = 0.00, subtotal = 0.00, tax = 0.00, tax_percentage = 0.00, discount = 0.00, discount_percentage = 0.00, shipping = 0.0;
+
+var selectCustomer = $("#selectCustomer");
 
 $(document).ready(function () {
     $('.js-example-basic-single').select2();
@@ -22,6 +25,27 @@ $(function () {
         },
         error: function () {
             console.log("Failed to get products");
+        }
+    })
+})
+
+$(function () {
+    $.ajax({
+        url: '/Sales/GetCustomers',
+        method: 'GET',
+        success: function (response) {
+            customersList = response;
+
+            $.each(customersList, function (index, customer) {
+                selectCustomer.append($('<option>', {
+                    value: customer.id,
+                    text: customer.fname + " " + customer.lname
+                }));
+            })
+
+        },
+        error: function () {
+            console.log("Failed to get customers");
         }
     })
 })
@@ -78,7 +102,7 @@ $("#selectProduct").on("autocompleteselect", function (event, ui) {
     totalPrice += selectedProduct.price
     subtotal = selectedProduct.price
     updateSubtotal(quantityInput);
-    updateTotalPrice();
+    // updateTotalPrice();
 
     return false;
 });
@@ -155,7 +179,8 @@ function updateSubtotal(input) {
         value += convertToNumber($(this).find("td:eq(4)").text());
     })
 
-    console.log(value)
+    $(".tax-value").text(insertCommas(value * (tax_percentage / 100)))
+    $(".discount-value").text(insertCommas(value * (discount_percentage / 100)));
 
     calculateTotalPrice({
         subtotal: value,
@@ -163,9 +188,6 @@ function updateSubtotal(input) {
         discount: value * (discount_percentage / 100),
         shipping: shipping,
     })
-
-    $(".tax-value").text(insertCommas(value * (tax_percentage / 100)))
-    $(".discount-value").text(insertCommas(value * (discount_percentage / 100)));
 }
 
 
@@ -249,7 +271,8 @@ $(".shipping-input").on('input', function () {
         value += convertToNumber($(this).find("td:eq(4)").text());
     })
 
-    shipping = parseFloat($(this).val());
+    shipping = $(this).val() ? parseFloat($(this).val()) : 0.00;
+    console.log($(this).val())
 
     $(".shipping-value").text(insertCommas(shipping));
 
@@ -263,6 +286,14 @@ $(".shipping-input").on('input', function () {
 
 
 function calculateTotalPrice(options) {
-    totalPrice = (options.subtotal - options.discount) + (options.tax + options.shipping);
+    console.log(options)
+    if (options.discount > 0.00) {
+        tax = (options.subtotal - options.discount) * (tax_percentage / 100)
+        console.log(options.subtotal, options.discount, options.subtotal - options.discount, tax)
+        $(".tax-value").text(insertCommas(tax.toFixed(2)));
+        totalPrice = (options.subtotal - options.discount) + (tax + options.shipping);
+    } else {
+        totalPrice = (options.subtotal - options.discount) + (options.tax + options.shipping);
+    }
     updateTotalPrice()
 }

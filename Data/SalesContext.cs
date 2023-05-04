@@ -12,6 +12,7 @@ namespace sales_invoicing_dotnet.Data
         public DbSet<Product>? Products { get; set; }
         public DbSet<Sale>? Sales { get; set; }
         public DbSet<SaleProduct>? SaleProducts { get; set; }
+        public DbSet<Customer>? Customer { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,14 @@ namespace sales_invoicing_dotnet.Data
                 new Product { Id = 4, Name = "Netac USB Type-C 128 GB", Price = 1600.00M, sku = "PROD-004", imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/71/283233/1.jpg?8328" },
                 new Product { Id = 5, Name = "Sandisk USB 32GB ", Price = 8500.00M, sku = "PROD-005", imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/01/191691/1.jpg?4986" }
                 );
+
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer { Id = 1, fname = "Wanjiku", lname = "Mwangi" },
+                new Customer { Id = 2, fname = "Kipchoge", lname = "Keino" },
+                new Customer { Id = 3, fname = "Auma", lname = "Obama" },
+                new Customer { Id = 4, fname = "Mumbi", lname = "Ngugi" },
+                new Customer { Id = 5, fname = "Omondi", lname = "Odinga" }
+            );
         }
 
     }
