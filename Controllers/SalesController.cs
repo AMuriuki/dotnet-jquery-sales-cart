@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using sales_invoicing_dotnet.Data;
 
 namespace sales_invoicing_dotnet.Controllers
@@ -136,6 +138,12 @@ namespace sales_invoicing_dotnet.Controllers
                 string errorMessage = $"An error occurred: {ex.Message}\nStack trace: {ex.StackTrace}\nLine number: {ex.LineNumber()}";
                 return BadRequest(errorMessage);
             }
+        }
+
+        public async Task<IActionResult> Invoices()
+        {
+            var invoices = await _context.Invoices.Include(i => i.Customer).ToListAsync();
+            return View(invoices);
         }
 
     }

@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Invoices Page";
+}
+
+@model List<Invoice>
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Invoices Report</h4>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table datanew">
+                        <thead>
+                            <tr>
+                                <th>Customer name </th>
+                                <th>Invoice Amount</th>
+                                <th>Invoice Date</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var invoice in Model)
+                            {
+                                <tr>
+                                    <td>@invoice.Customer.fname</td>
+                                    <td>@invoice.GrandTotal</td>
+                                    <td>@invoice.Date</td>
+                                    <td>
+                                        <a href="#" class="btn btn-secondary">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -20,6 +20,11 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 </head>
 
+@{
+    var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var currentAction = ViewContext.RouteData.Values["action"].ToString();
+}
+
 <body>
     <div id="global-loader">
         <div class="whirly-loader"></div>
@@ -63,10 +68,20 @@
                             <li class="submenu-open">
                                 <h6 class="submenu-hdr">Sales</h6>
                                 <ul>
-                                    <li class="active"><a href="saleslist.html"><i
-                                                data-feather="shopping-cart"></i><span>Sales</span></a></li>
-                                    <li><a href="invoicereport.html"><i
-                                                data-feather="file-text"></i><span>Invoices</span></a></li>
+                                    <li @(currentController == "Sales" && currentAction == "Index" ? "class=active" :
+                                        "")>
+                                        <a href="@Url.Action("Index", "Sales")">
+                                            <i data-feather="shopping-cart"></i>
+                                            <span>Sales</span>
+                                        </a>
+                                    </li>
+                                    <li @(currentController == "Sales" && currentAction == "Invoices" ? "class=active" :
+                                        "")>
+                                        <a href="@Url.Action("Invoices", "Sales")">
+                                            <i data-feather="file-text"></i>
+                                            <span>Invoices</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
