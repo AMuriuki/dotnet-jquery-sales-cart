@@ -346,7 +346,8 @@ $("#submitBtn").click(function () {
         contentType: "application/json; charset=UTF-8",
         dataType: "text",
         success: function (response) {
-            alert("Order posted successfully")
+            alert("Order posted successfully");
+            window.location.href = "/Sales/Invoices";
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert("Error: " + jqXHR.responseText);
