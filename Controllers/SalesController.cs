@@ -148,7 +148,7 @@ namespace sales_invoicing_dotnet.Controllers
 
         public IActionResult ViewInvoice(int id)
         {
-            var invoice = _context.Invoices.Include(i => i.Customer).FirstOrDefault(i => i.Id == id);
+            var invoice = _context.Invoices.Include(i => i.Customer).Include(i => i.SoldProducts).ThenInclude(sp => sp.Product).FirstOrDefault(i => i.Id == id);
 
             if (invoice == null)
             {

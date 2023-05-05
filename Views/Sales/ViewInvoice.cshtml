@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "View Invoice";
+}
+
+@model Invoice
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Invoice Details</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                Contents here
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                        <h5 class="mb-3 fs-0">Customer Name:</h5>
+                        <h6 class="mb-2">@Model.Customer.fname&nbsp;@Model.Customer.lname</h6>
+                    </div>
+                    <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                        <h5 class="mb-3 fs-0">Invoice Date</h5>
+                        <h6 class="mb-2">@Model.Date</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="table-responsive fs--1">
+                    <table class="table table-striped border-bottom">
+                        <thead class="bg-200 text-900">
+                            <tr>
+                                <th class="border-0">Product Name</th>
+                                <th class="border-0 text-center">Quantity</th>
+                                <th class="border-0 text-end">Price</th>
+                                <th class="border-0 text-end">Sub Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var soldProduct in Model.SoldProducts)
+                            {
+                                <tr class="border-200">
+                                    <td class="align-middle">
+                                        <h6 class="mb-0 text-nowrap">
+                                            @soldProduct.ProductName()
+                                        </h6>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        @soldProduct.Quantity
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        @soldProduct.Product.Price.ToString("N2")
+                                    </td>
+                                    <td class="align-middle text-end">@((soldProduct.Quantity *
+                                    soldProduct.Product.Price).ToString("N2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row g-0 justify-content-end">
+                    <div class="col-auto">
+                        <table class="table table-sm table-borderless fs--1 text-end">
+                            <tbody>
+                                <tr>
+                                    <th class="text-900">Discount&nbsp;(@Model.DiscountPercent%):</th>
+                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.DiscountValue.ToString("N2")</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <th class="text-900">Tax (@Model.TaxPercent)%:</th>
+                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.TaxValue.ToString("N2")</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <th class="text-900">Shipping:</th>
+                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.Shipping.ToString("N2")</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <th class="fw-bolder">Grand Total:</th>
+                                    <td class="fw-semi-bold">Ksh&nbsp;@Model.GrandTotal.ToString("N2")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

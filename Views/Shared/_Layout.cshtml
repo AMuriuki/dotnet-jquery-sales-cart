@@ -75,7 +75,7 @@
                                             <span>Sales</span>
                                         </a>
                                     </li>
-                                    <li @(currentController == "Sales" && currentAction == "Invoices" ? "class=active" :
+                                    <li @(currentController == "Sales" && (currentAction == "Invoices" || currentAction == "ViewInvoice") ? "class=active" :
                                         "")>
                                         <a href="@Url.Action("Invoices", "Sales")">
                                             <i data-feather="file-text"></i>
