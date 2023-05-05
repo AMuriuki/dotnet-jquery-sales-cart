@@ -146,5 +146,16 @@ namespace sales_invoicing_dotnet.Controllers
             return View(invoices);
         }
 
+        public IActionResult ViewInvoice(int id)
+        {
+            var invoice = _context.Invoices.Include(i => i.Customer).FirstOrDefault(i => i.Id == id);
+
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+            return View(invoice);
+        }
+
     }
 }

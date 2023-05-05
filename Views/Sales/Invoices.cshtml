@@ -28,11 +28,11 @@
                             @foreach (var invoice in Model)
                             {
                                 <tr>
-                                    <td>@invoice.Customer.fname</td>
-                                    <td>@invoice.GrandTotal</td>
+                                    <td>@(invoice.Customer.fname + " " + invoice.Customer.lname)</td>
+                                    <td>@invoice.GrandTotal.ToString("N2")</td>
                                     <td>@invoice.Date</td>
                                     <td>
-                                        <a href="#" class="btn btn-secondary">
+                                        <a href="@Url.Action("ViewInvoice", "Sales", new {id = invoice.Id})" class="btn btn-secondary">
                                             View
                                         </a>
                                     </td>
