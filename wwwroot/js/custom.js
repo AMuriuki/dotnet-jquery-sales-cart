@@ -16,38 +16,34 @@ $(document).ready(function () {
                 data: { term: request.term, page: 1, pageSize: 10 },
                 type: "GET",
                 success: function (data) {
-                    console.log(data)
                     response(data);
                 },
                 error: function (xhr, status, error) {
-                    console.log(xhr.responseText)
+                    alert(xhr.responseText)
                 }
             });
         },
         minLength: 1
     });
-});
 
-$(function () {
-    $.ajax({
-        url: '/Sales/GetCustomers',
-        method: 'GET',
-        success: function (response) {
-            customersList = response;
-
-            $.each(customersList, function (index, customer) {
-                selectCustomer.append($('<option>', {
-                    value: customer.id,
-                    text: customer.fname + " " + customer.lname
-                }));
+    $("#selectCustomer").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Sales/GetCustomers",
+                data: { term: request.term, page: 1, pageSize: 10 },
+                type: "GET",
+                success: function (data) {
+                    response(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText)
+                }
             })
-
-        },
-        error: function () {
-            console.log("Failed to get customers");
         }
     })
-})
+
+
+});
 
 $("#selectProduct").on("autocompleteselect", function (event, ui) {
     var selectedValue = ui.item.value;

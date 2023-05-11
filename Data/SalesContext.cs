@@ -43,16 +43,17 @@ namespace sales_invoicing_dotnet.Data
 
                     var customer = new Customer
                     {
-                        EmailAddress = fields[1],
-                        ContactName = fields[2],
-                        CompanyName = fields[3],
-                        Department = fields[4],
-                        PhoneNumber = fields[5],
-                        LoyaltyCard = fields[6],
-                        Gender = fields[7],
-                        Country = fields[8],
-                        RegistrationDate = DateTime.TryParse(fields[9], out DateTime registrationDate) ? registrationDate : default,
-                        LoyaltyPoints = decimal.TryParse(fields[10], out decimal loyaltyPoints) ? loyaltyPoints : default
+                        JobTitle = fields[1],
+                        EmailAddress = fields[2],
+                        ContactName = fields[3],
+                        CompanyName = fields[4],
+                        Department = fields[5],
+                        PhoneNumber = fields[6],
+                        LoyaltyCard = fields[7],
+                        Gender = fields[8],
+                        Country = fields[9],
+                        RegistrationDate = DateTime.TryParse(fields[10], out DateTime registrationDate) ? registrationDate : default,
+                        LoyaltyPoints = decimal.TryParse(fields[11], out decimal loyaltyPoints) ? loyaltyPoints : default
                     };
 
                     // check if customer with the same ID exists

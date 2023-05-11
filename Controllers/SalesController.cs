@@ -41,11 +41,18 @@ namespace sales_invoicing_dotnet.Controllers
             }
         }
 
-        public IActionResult GetCustomers()
+        public IActionResult GetCustomers(string term, int page, int pageSize)
         {
             if (_context.Customers != null)
             {
-                var customersList = _context.Customers.Take(10).ToList();
+                var customersList = _context.Customers
+                .Where(c => EF.Functions.Like(c.ContactName, $"%{term}%"))
+                .OrderBy(c => c.ContactName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new { label = c.ContactName, value = c.Id })
+                .ToList();
+
                 return Json(customersList);
             }
             else

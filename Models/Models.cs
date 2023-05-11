@@ -44,6 +44,7 @@ public static class SoldProductExtensions
 public class Customer
 {
     public int Id { get; set; }
+    public string? JobTitle { get; set; }
     public string? EmailAddress { get; set; }
     public string? ContactName { get; set; }
     public string? CompanyName { get; set; }
