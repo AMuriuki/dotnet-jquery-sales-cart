@@ -21,11 +21,18 @@ namespace sales_invoicing_dotnet.Controllers
             return View();
         }
 
-        public IActionResult GetProducts()
+        public IActionResult GetProducts(string term, int page, int pageSize)
         {
             if (_context.Products != null)
             {
-                var productsList = _context.Products.ToList();
+                var productsList = _context.Products
+                .Where(p => EF.Functions.Like(p.Name, $"%{term}%") || EF.Functions.Like(p.ProductCode.ToString(), $"%{term}%"))
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new { label = $"{p.Name} - {p.ProductCode}", value = p.Id })
+                .ToList();
+
                 return Json(productsList);
             }
             else
@@ -38,7 +45,7 @@ namespace sales_invoicing_dotnet.Controllers
         {
             if (_context.Customers != null)
             {
-                var customersList = _context.Customers.ToList();
+                var customersList = _context.Customers.Take(10).ToList();
                 return Json(customersList);
             }
             else

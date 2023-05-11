@@ -28,7 +28,7 @@
                             @foreach (var invoice in Model)
                             {
                                 <tr>
-                                    <td>@(invoice.Customer.fname + " " + invoice.Customer.lname)</td>
+                                    <td>@(invoice.Customer.ContactName)</td>
                                     <td>@invoice.GrandTotal.ToString("N2")</td>
                                     <td>@invoice.Date</td>
                                     <td>

@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.IO;
 
 namespace sales_invoicing_dotnet.Data
 {
@@ -9,10 +11,10 @@ namespace sales_invoicing_dotnet.Data
 
         }
 
-        public DbSet<Product>? Products { get; set; }
-        public DbSet<Invoice>? Invoices { get; set; }
-        public DbSet<SoldProduct>? SoldProducts { get; set; }
-        public DbSet<Customer>? Customers { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<SoldProduct> SoldProducts { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,24 +24,75 @@ namespace sales_invoicing_dotnet.Data
 
             modelBuilder.Entity<SoldProduct>().HasOne(sp => sp.Product).WithMany(p => p.SoldProducts).HasForeignKey(sp => sp.ProductId);
 
-            modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Name = "Apple AirPods Pro", Price = 8500.00M, imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/31/2411421/1.jpg?5248" },
-                new Product { Id = 2, Name = "Xiaomi Redmi Buds", Price = 2700.00M, imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/05/7399421/1.jpg?3641" },
-                new Product { Id = 3, Name = "Oraimo Wireless Earphone", Price = 3400.00M, imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/94/1328411/1.jpg?9977" },
-                new Product { Id = 4, Name = "Netac USB Type-C 128 GB", Price = 1600.00M, imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/71/283233/1.jpg?8328" },
-                new Product { Id = 5, Name = "Sandisk USB 32GB ", Price = 8500.00M, imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/01/191691/1.jpg?4986" }
-                );
-
             modelBuilder.Entity<Invoice>().HasOne<Customer>(i => i.Customer).WithMany(c => c.Invoices).HasForeignKey(i => i.CustomerId);
-
-            modelBuilder.Entity<Customer>().HasData(
-                new Customer { Id = 1, fname = "Wanjiku", lname = "Mwangi" },
-                new Customer { Id = 2, fname = "Kipchoge", lname = "Keino" },
-                new Customer { Id = 3, fname = "Auma", lname = "Obama" },
-                new Customer { Id = 4, fname = "Mumbi", lname = "Ngugi" },
-                new Customer { Id = 5, fname = "Omondi", lname = "Odinga" }
-            );
         }
 
+        public void LoadCustomersFromCsv(string path)
+        {
+            using (var reader = new StreamReader(path))
+            {
+                // skip header row
+                reader.ReadLine();
+
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var fields = line.Split(',');
+
+                    Console.WriteLine("Customer " + fields[0].ToString());
+
+                    var customer = new Customer
+                    {
+                        EmailAddress = fields[1],
+                        ContactName = fields[2],
+                        CompanyName = fields[3],
+                        Department = fields[4],
+                        PhoneNumber = fields[5],
+                        LoyaltyCard = fields[6],
+                        Gender = fields[7],
+                        Country = fields[8],
+                        RegistrationDate = DateTime.TryParse(fields[9], out DateTime registrationDate) ? registrationDate : default,
+                        LoyaltyPoints = decimal.TryParse(fields[10], out decimal loyaltyPoints) ? loyaltyPoints : default
+                    };
+
+                    // check if customer with the same ID exists
+                    if (!Customers.Any(c => c.Id == int.Parse(fields[0])))
+                    {
+                        Customers.Add(customer);
+                    }
+                }
+            }
+
+            SaveChanges();
+        }
+
+        public void LoadProductsFromCsv(string path)
+        {
+            using (var reader = new StreamReader(path))
+            {
+                // skip header row
+                reader.ReadLine();
+
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var fields = line.Split(',');
+
+                    Console.WriteLine("Product " + fields[0].ToString());
+
+                    var product = new Product
+                    {
+                        TaxRate = int.TryParse(fields[2], out int TaxRate) ? TaxRate : default,
+                        Name = fields[3],
+                        Price = decimal.TryParse(fields[2], out decimal Price) ? Price : default,
+                        BarCode = int.TryParse(fields[4], out int BarCode) ? BarCode : default,
+                        ProductCode = int.TryParse(fields[4], out int ProductCode) ? ProductCode : default,
+                    };
+
+                    Products.Add(product);
+                }
+            }
+            SaveChanges();
+        }
     }
 }

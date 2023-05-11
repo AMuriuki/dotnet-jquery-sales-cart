@@ -23,47 +23,39 @@ namespace sales_invoicing_dotnet.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("fname")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("lname")
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoyaltyCard")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("LoyaltyPoints")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            fname = "Wanjiku",
-                            lname = "Mwangi"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            fname = "Kipchoge",
-                            lname = "Keino"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            fname = "Auma",
-                            lname = "Obama"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            fname = "Mumbi",
-                            lname = "Ngugi"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            fname = "Omondi",
-                            lname = "Odinga"
-                        });
                 });
 
             modelBuilder.Entity("Invoice", b =>
@@ -109,11 +101,20 @@ namespace sales_invoicing_dotnet.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BarCode")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TaxRate")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("imageUrl")
                         .HasColumnType("TEXT");
@@ -121,43 +122,6 @@ namespace sales_invoicing_dotnet.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Apple AirPods Pro",
-                            Price = 8500.00m,
-                            imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/31/2411421/1.jpg?5248"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Xiaomi Redmi Buds",
-                            Price = 2700.00m,
-                            imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/05/7399421/1.jpg?3641"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Oraimo Wireless Earphone",
-                            Price = 3400.00m,
-                            imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/94/1328411/1.jpg?9977"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Netac USB Type-C 128 GB",
-                            Price = 1600.00m,
-                            imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/71/283233/1.jpg?8328"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Sandisk USB 32GB ",
-                            Price = 8500.00m,
-                            imageUrl = "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/01/191691/1.jpg?4986"
-                        });
                 });
 
             modelBuilder.Entity("SoldProduct", b =>

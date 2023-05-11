@@ -8,28 +8,25 @@ $(document).ready(function () {
     $('.js-example-basic-single').select2();
 });
 
-
-
-$(function () {
-    $.ajax({
-        url: '/Sales/GetProducts',
-        method: 'GET',
-        success: function (response) {
-            products = response;
-
-            var productNames = $.map(products, function (product) {
-                return product['name'];
-            });
-
-            $("#selectProduct").autocomplete({
-                source: productNames,
+$(document).ready(function () {
+    $("#selectProduct").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Sales/GetProducts",
+                data: { term: request.term, page: 1, pageSize: 10 },
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    response(data);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText)
+                }
             });
         },
-        error: function () {
-            console.log("Failed to get products");
-        }
-    })
-})
+        minLength: 1
+    });
+});
 
 $(function () {
     $.ajax({
