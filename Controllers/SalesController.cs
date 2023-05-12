@@ -21,6 +21,19 @@ namespace sales_invoicing_dotnet.Controllers
             return View();
         }
 
+        public IActionResult GetProductConfig()
+        {
+            if (_context.ProductConfigurations != null)
+            {
+                var productConfig = _context.ProductConfigurations.FirstOrDefault();
+                return Json(productConfig);
+            }
+            else
+            {
+                return Json(new List<ProductConfiguration>());
+            }
+        }
+
         public IActionResult GetProducts(string term, int page, int pageSize)
         {
             if (_context.Products != null)
@@ -30,7 +43,7 @@ namespace sales_invoicing_dotnet.Controllers
                 .OrderBy(p => p.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(p => new { label = $"{p.Name} - {p.ProductCode}", value = p.Id })
+                .Select(p => new { label = $"{p.Name} - {p.ProductCode}", name = p.Name, value = p.Id, price = p.Price })
                 .ToList();
 
                 return Json(productsList);
@@ -46,11 +59,11 @@ namespace sales_invoicing_dotnet.Controllers
             if (_context.Customers != null)
             {
                 var customersList = _context.Customers
-                .Where(c => EF.Functions.Like(c.ContactName, $"%{term}%"))
+                .Where(c => EF.Functions.Like(c.ContactName, $"%{term}%") || EF.Functions.Like(c.EmailAddress, $"%{term}%"))
                 .OrderBy(c => c.ContactName)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(c => new { label = c.ContactName, value = c.Id })
+                .Select(c => new { label = $"{c.ContactName} ({c.EmailAddress})", value = c.Id })
                 .ToList();
 
                 return Json(customersList);

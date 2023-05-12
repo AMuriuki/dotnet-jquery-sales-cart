@@ -2,7 +2,20 @@ var products = [], customers = [];
 
 var totalPrice = 0.00, subtotal = 0.00, tax = 0.00, tax_percentage = 0.00, discount = 0.00, discount_percentage = 0.00, shipping = 0.0;
 
-var selectCustomer = $("#selectCustomer");
+$(function () {
+    $.ajax({
+        url: '/Sales/GetProductConfig',
+        method: 'GET',
+        success: function (response) {
+            console.log(response);
+            tax_percentage = response.taxRate
+            $(".tax-input").val(tax_percentage);
+        },
+        error: function () {
+            console.log("Failed to get product configurations");
+        }
+    })
+})
 
 $(document).ready(function () {
     $('.js-example-basic-single').select2();
@@ -23,7 +36,78 @@ $(document).ready(function () {
                 }
             });
         },
-        minLength: 1
+        minLength: 1,
+
+        // when user selects a product
+        select: function (event, ui) {
+            var selectedProduct = ui.item;
+
+            var sameProductRow = null;
+
+            var rows = $("#cart-table-body tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows.eq(1);
+                var productInfo = row.find(".product")
+                if (productInfo.text() === selectedProduct.name) {
+                    sameProductRow = row;
+                    break;
+                }
+            }
+
+            if (sameProductRow) {
+                // if the same product is already in the cart increase the quantity for that row
+                var quantityInput = sameProductRow.find(".quantity input");
+                var quantity = parseInt(quantityInput.val()) + 1;
+                quantityInput.val(quantity);
+                updateSubtotal(quantityInput);
+            }
+
+            var quantityInput = $("<input>").attr("type", "text").attr("class", "quantity").val("1");
+
+            // create a new row for the selected product
+            var newRow = $("<tr>");
+
+            // add product info to the new row
+            newRow.append($("<td>").text($("#cart-table-body tr").length + 1));
+            newRow.append(
+                $("<td>").append(
+                    $("<a>").addClass("product").attr("href", "javascript:void(0);").attr("id", selectedProduct.value).text(selectedProduct.name)));
+            newRow.append(
+                $("<td>").
+                    append(
+                        $("<div>").addClass("quantity").append(
+                            $("<button>").attr("type", "button").text("-").click(decreaseQuantity),
+                            quantityInput,
+                            $("<button>").attr("type", "button").text("+").click(increaseQuantity)
+                        )
+                    )
+            );
+            newRow.append(
+                $("<td>").text(insertCommas(selectedProduct.price.toFixed(2))));
+            newRow.append(
+                $("<td>").text(insertCommas(selectedProduct.price.toFixed(2))));
+            newRow.append(
+                $("<td>").
+                    append(
+                        $("<a>").attr("href", "javascript:void(0);").addClass("delete-set").append(
+                            $("<img>").attr("src", "/images/delete.svg").attr("alt", "svg")
+                        )
+                    ));
+
+            // add the new row to the table
+            $("#cart-table-body").append(newRow);
+
+            $("#selectProduct").val('');
+            $(".extras").removeClass("d-none");
+
+            // update the total price
+            totalPrice += selectedProduct.price
+            subtotal = selectedProduct.price
+            updateSubtotal(quantityInput);
+
+            return false;
+        }
     });
 
     $("#selectCustomer").autocomplete({
@@ -45,62 +129,6 @@ $(document).ready(function () {
 
 });
 
-$("#selectProduct").on("autocompleteselect", function (event, ui) {
-    var selectedValue = ui.item.value;
-
-    var selectedProduct = products.find(function (product) {
-        return product.name === selectedValue;
-    });
-
-    var quantityInput = $("<input>").attr("type", "text").attr("class", "quantity").val("1");
-
-    // create a new row for selected product
-    var newRow = $("<tr>");
-
-    // add the product info to the new row
-    newRow.append($("<td>").text($("#cart-table-body tr").length + 1));
-    newRow.append(
-        $("<td>").addClass("productimgname").
-            append(
-                $("<a>").addClass("product-img").
-                    append($("<img>").attr("src", selectedProduct.imageUrl).attr("alt", selectedProduct.name)),
-                $("<a>").addClass("product").attr("href", "javascript:void(0);").attr("id", selectedProduct.id).text(selectedProduct.name)));
-    newRow.append(
-        $("<td>").
-            append(
-                $("<div>").addClass("quantity").append(
-                    $("<button>").attr("type", "button").text("-").click(decreaseQuantity),
-                    quantityInput,
-                    $("<button>").attr("type", "button").text("+").click(increaseQuantity)
-                )
-            )
-    );
-    newRow.append(
-        $("<td>").text(insertCommas(selectedProduct.price.toFixed(2))));
-    newRow.append(
-        $("<td>").text(insertCommas(selectedProduct.price.toFixed(2))));
-    newRow.append(
-        $("<td>").
-            append(
-                $("<a>").attr("href", "javascript:void(0);").addClass("delete-set").append(
-                    $("<img>").attr("src", "/images/delete.svg").attr("alt", "svg")
-                )
-            ));
-
-    // add the new row to the table
-    $("#cart-table-body").append(newRow);
-
-    $("#selectProduct").val('');
-    $(".extras").removeClass("d-none");
-
-    // update the total price
-    totalPrice += selectedProduct.price
-    subtotal = selectedProduct.price
-    updateSubtotal(quantityInput);
-    // updateTotalPrice();
-
-    return false;
-});
 
 $(document).on('click', '.delete-set', function () {
     var value = 0.00;
@@ -177,6 +205,8 @@ function updateSubtotal(input) {
     $(".tax-value").text(insertCommas(value * (tax_percentage / 100)))
     $(".discount-value").text(insertCommas(value * (discount_percentage / 100)));
 
+    console.log(value, tax_percentage);
+
     calculateTotalPrice({
         subtotal: value,
         tax: value * (tax_percentage / 100),
@@ -237,6 +267,7 @@ $('.tax-input').on('input', function () {
         shipping: shipping,
     })
 })
+
 
 $('.discount-input').on('input', function () {
     var value = 0.00;

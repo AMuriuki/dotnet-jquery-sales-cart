@@ -15,6 +15,7 @@ namespace sales_invoicing_dotnet.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<SoldProduct> SoldProducts { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<ProductConfiguration> ProductConfigurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,10 @@ namespace sales_invoicing_dotnet.Data
             modelBuilder.Entity<SoldProduct>().HasOne(sp => sp.Product).WithMany(p => p.SoldProducts).HasForeignKey(sp => sp.ProductId);
 
             modelBuilder.Entity<Invoice>().HasOne<Customer>(i => i.Customer).WithMany(c => c.Invoices).HasForeignKey(i => i.CustomerId);
+
+            modelBuilder.Entity<ProductConfiguration>().HasData(
+                new ProductConfiguration { Id = 1, TaxRate = 16 }
+            );
         }
 
         public void LoadCustomersFromCsv(string path)
@@ -41,24 +46,24 @@ namespace sales_invoicing_dotnet.Data
 
                     Console.WriteLine("Customer " + fields[0].ToString());
 
-                    var customer = new Customer
-                    {
-                        JobTitle = fields[1],
-                        EmailAddress = fields[2],
-                        ContactName = fields[3],
-                        CompanyName = fields[4],
-                        Department = fields[5],
-                        PhoneNumber = fields[6],
-                        LoyaltyCard = fields[7],
-                        Gender = fields[8],
-                        Country = fields[9],
-                        RegistrationDate = DateTime.TryParse(fields[10], out DateTime registrationDate) ? registrationDate : default,
-                        LoyaltyPoints = decimal.TryParse(fields[11], out decimal loyaltyPoints) ? loyaltyPoints : default
-                    };
+                    var customerId = int.Parse(fields[0]);
 
-                    // check if customer with the same ID exists
-                    if (!Customers.Any(c => c.Id == int.Parse(fields[0])))
+                    if (!Customers.Any(c => c.Id == customerId))
                     {
+                        var customer = new Customer
+                        {
+                            JobTitle = fields[1],
+                            EmailAddress = fields[2],
+                            ContactName = fields[3],
+                            CompanyName = fields[4],
+                            Department = fields[5],
+                            PhoneNumber = fields[6],
+                            LoyaltyCard = fields[7],
+                            Gender = fields[8],
+                            Country = fields[9],
+                            RegistrationDate = DateTime.TryParse(fields[10], out DateTime registrationDate) ? registrationDate : default,
+                            LoyaltyPoints = decimal.TryParse(fields[11], out decimal loyaltyPoints) ? loyaltyPoints : default
+                        };
                         Customers.Add(customer);
                     }
                 }
@@ -90,7 +95,13 @@ namespace sales_invoicing_dotnet.Data
                         ProductCode = int.TryParse(fields[4], out int ProductCode) ? ProductCode : default,
                     };
 
-                    Products.Add(product);
+                    // check if product with the same product code exists
+                    var existingProduct = Products.FirstOrDefault(p => p.ProductCode == product.ProductCode);
+
+                    if (existingProduct == null)
+                    {
+                        Products.Add(product);
+                    }
                 }
             }
             SaveChanges();

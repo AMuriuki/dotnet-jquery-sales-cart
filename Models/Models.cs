@@ -9,6 +9,12 @@ public class Product
     public int ProductCode { get; set; }
     public ICollection<SoldProduct>? SoldProducts { get; set; } = new List<SoldProduct>();
 }
+
+public class ProductConfiguration
+{
+    public int Id { get; set; }
+    public int TaxRate { get; set; }
+}
 public class Invoice
 {
     public int Id { get; set; }
@@ -57,3 +63,5 @@ public class Customer
     public decimal LoyaltyPoints { get; set; }
     public ICollection<Invoice>? Invoices { get; set; }
 }
+
+
