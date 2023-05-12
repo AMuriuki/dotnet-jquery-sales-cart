@@ -114,6 +114,9 @@ namespace sales_invoicing_dotnet.Controllers
                     var shippingStr = jsonDocument.RootElement.GetProperty("shipping").GetString();
                     decimal.TryParse(shippingStr, out decimal shipping);
 
+                    var totalStr = jsonDocument.RootElement.GetProperty("total").GetString();
+                    decimal.TryParse(totalStr, out decimal total);
+
                     var grandTotalStr = jsonDocument.RootElement.GetProperty("grandTotal").GetString();
                     decimal.TryParse(grandTotalStr, out decimal grandTotal);
 
@@ -135,6 +138,7 @@ namespace sales_invoicing_dotnet.Controllers
                         DiscountPercent = discountPercentage,
                         DiscountValue = discountValue,
                         Shipping = shipping,
+                        Total = total,
                         GrandTotal = grandTotal,
                         SoldProducts = new List<SoldProduct>()
                     };

@@ -25,6 +25,7 @@ public class Invoice
     public int DiscountPercent { get; set; }
     public decimal DiscountValue { get; set; }
     public decimal Shipping { get; set; }
+    public decimal Total { get; set; }
     public decimal GrandTotal { get; set; }
     public Customer? Customer { get; set; }
     public ICollection<SoldProduct>? SoldProducts { get; set; }

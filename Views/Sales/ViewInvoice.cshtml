@@ -73,16 +73,20 @@
                         <table class="table table-sm table-borderless fs--1 text-end">
                             <tbody>
                                 <tr>
-                                    <th class="text-900">Discount&nbsp;(@Model.DiscountPercent%):</th>
-                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.DiscountValue.ToString("N2")</td>
+                                    <th class="fw-bolder">Total:</th>
+                                    <td class="fw-semi-bold">@Model.Total.ToString("N2")</td>
                                 </tr>
                                 <tr class="border-top">
                                     <th class="text-900">Tax (@Model.TaxPercent)%:</th>
-                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.TaxValue.ToString("N2")</td>
+                                    <td class="fw-semi-bold">@Model.TaxValue.ToString("N2")</td>
                                 </tr>
                                 <tr class="border-top">
                                     <th class="text-900">Shipping:</th>
-                                    <td class="fw-semi-bold">Ksh.&nbsp;@Model.Shipping.ToString("N2")</td>
+                                    <td class="fw-semi-bold">@Model.Shipping.ToString("N2")</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <th class="text-900">Discount&nbsp;(@Model.DiscountPercent%):</th>
+                                    <td class="fw-semi-bold">(@Model.DiscountValue.ToString("N2"))</td>
                                 </tr>
                                 <tr class="border-top">
                                     <th class="fw-bolder">Grand Total:</th>
